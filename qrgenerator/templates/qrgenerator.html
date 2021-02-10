@@ -1,0 +1,67 @@
+{% load static %}
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+       </head>
+
+<body style="text-align: center; background-color: rgb(96, 197, 255);">
+    <div class="container" style="max-width: 900px;">
+        <br>
+        <br>
+        <h2 class="text-center">Made you a Mixtape</h2>
+        <img src="{% static 'cassette-tape-mockup.png' %}">
+        <div style="text-align: left;">
+            <h3>1. Enter your playlist url</h3>
+            <h3>2. Generate your custom QR code mixtape</h3>
+            <h3>3. Print, build it, and give it to someone special</h3>
+        </div>
+        <br>
+            {% csrf_token %}
+            <div class="input-group mb-3 shadow" style="text-align: left;">
+                <input type="text" id="test" name="url" class="form-control shadow test" placeholder="Recipient's username"
+                    aria-label="Recipient's username" aria-describedby="basic-addon2" required >
+                <div class="input-group-append">
+                    <button id="submit" class="btn btn-warning shadow" type="button">Submit</button>
+                </div>
+            </div>
+        <div class="row">
+            <div id="download" class="col-6" style="text-align: left;">
+                <a href="/static/qr/{{ file_name }}" style="{% if download != True %}cursor: not-allowed;pointer-events: none;{% endif %} z-index: 2; position: absolute;"  class="{% if download != True %}btn btn-dark shadow {% else %}btn btn-warning{% endif %}" download="">Download</a>
+            </div>
+            <div class="col-6" style="text-align: right;">
+                <img src="/static/fb.png" width="60px">{% post_to_facebook '/static/fb.png' %}
+                <img src="/static/instagram.png" width="60px" style="margin-left: 30px;">
+                <img src="/static/twitter.png" width="60px" style="margin-left: 30px;">
+            </div>
+            <div class="col-12" style="margin-top:-90px; z-index: 0;">
+                <img src="/static/cassette_papercraft.png" style="max-width: 800px; z-index: 0;">
+            </div>
+        </div>
+
+    </div>
+</body>
+<script>
+    $(document).ready(function() {
+        $('body').on('click', '#submit', function (event) {
+            var url = document.getElementById("test");
+            url = url.value
+            $.ajax({
+            url: '/',
+            data:{
+                'do':'true',
+                'url': url,
+            },
+            dataType: 'json',
+            success: function (data) {
+            $('#download').html('<a href="/static/qr/'+data['file_name']+'" style="z-index: 2; position: absolute;"  class="btn btn-warning" download="">Download</a>')
+        }
+        })
+    });
+});
+</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</html>
